@@ -1,24 +1,30 @@
-<!-- ad-hoc user-defined simple tags -->
-<span class="btn-group" style="margin-left:20px;">
-  <button class="btn btn-default" data-toggle="modal" data-target="#add-tag-modal"
-      mindtagger-hotkey="+" title="Add a new tag">
-    <i class="glyphicon glyphicon-plus"></i>
-    <span class="sr-only">Add Tag</span>
-  </button>
-</span>
-<span ng-repeat="(tagName, tagSchema) in MindtaggerTask.schema.tags" ng-if="!MindtaggerTask.tagOptions[tagName].hidden">
-  <!-- simple tags -->
-  <label ng-if="tagSchema.type == 'simple'"
-    btn-checkbox btn-checkbox-true="true" btn-checkbox-false="null"
-    ng-model="tag[tagName]" ng-click="commit(item,tag)"
-    ng-class="tag[tagName] ? 'btn-info' : 'btn-default'"
-    mindtagger-hotkey="{{MindtaggerTask.tagOptions[tagName].shortcutKey}}"
-    title="Toggle tag '{{tagName}}'"
-    class="btn"><i class="glyphicon glyphicon-tag"></i>
-    <span class="tag-name">{{tagName}}</span>
-  </label>
-  <!-- TODO render categorical tags with one input box (name) and a dropdown -->
-  <!-- TODO render freetext tags with two input boxes: name and value -->
-  <!-- TODO autocomplete/typeahead in input boxes -->
+<div class="col-md-6">
+  <form class="form-horizontal" role="form" ng-submit="MindtaggerTask.addTagToCursor(tagNameToAdd, true)">
+    <div class="form-group">
+      <label for="add-tag-name" class="col-sm-2 control-label">Tag Name</label>
+      <div class="col-sm-10">
+        <input type="text" autocomplete="off" class="form-control" id="add-tag-name" ng-model="tagNameToAdd"
+          typeahead="tagName for tagName in keys(MindtaggerTask.schema.tags) | filter:$viewValue | limitTo:8">
+      </div>
+    </div>
+  </form>
+</div>
+<div class="col-md-6">
+  <button type="button" class="btn btn-primary" ng-click="MindtaggerTask.addTagToCursor(tagNameToAdd, true)">Add Tag</button>
+</div>
 
-</span>
+<div class="col-md-12">
+  <span ng-repeat="(tagName, tagSchema) in MindtaggerTask.schema.tags" ng-if="tag[tagName]">
+    <!-- simple tags -->
+    <span class="btn-group" ng-if="tagSchema.type == 'simple'">
+      <label class="btn btn-default tag-name">{{tagName}}</label>
+      <label btn-checkbox btn-checkbox-true="true" btn-checkbox-false="null"
+        ng-model="tag[tagName]" ng-click="commit(item,tag)"
+        mindtagger-hotkey="{{MindtaggerTask.tagOptions[tagName].shortcutKey}}"
+        title="Remove tag '{{tagName}}'"
+        class="btn btn-danger">
+        <i class="fa fa-remove"></i>
+      </label>
+    </span> 
+  </span>
+</div>
